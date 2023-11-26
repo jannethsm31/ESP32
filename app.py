@@ -1,25 +1,56 @@
-from flask import Flask, request
-import csv
+import os
+import sqlite3
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
-app = Flask(__name__)
+conn = sqlite3.connect("sql/datos.db")
 
-@app.route('/guardar-datos', methods=['POST'])
-def guardar_datos():
-    pot_value = request.args.get('pot')
-    led_value = request.args.get('led')
-    
-    with open('datos.csv', 'a', newline='') as csvfile:
-        fieldnames = ['pot', 'led']
-        writer = csv.DictWriter(csvfile, fieldnamees=fieldnames)
+app = FastAPI()
 
-        # Si el archivo no existe, escribe los encabezados
-        if csvfile.tell() == 0:
-            writer.writeheader()
+origins = [
+    "",
+    "",
+]
 
-        writer.writerow({'pot': pot_value, 'led': led_value})
-    
-    return 'Datos guardados'
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-if __name__ == '__main__':
-    app.run(debug=True)
-    
+class iot(BaseModel):
+    valor: str
+
+@app.get("/led")
+async def obtener_estado_led():
+    try:
+        c = conn.cursor()
+        c.execute('SELECT * FROM dispositivos')
+        response = [{'valor': row[2]} for row in c]
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=-1, detail=str(e))
+
+@app.post("/led/{estado}")
+async def cambiar_estado_led(estado: int):
+    try:
+        if estado not in [0, 1]:
+            raise HTTPException(status_code=-1, detail="El estado debe ser 0 o 1")
+
+        c = conn.cursor()
+        c.execute('INSERT INTO dispositivos (valor) VALUES (?)', (str(estado),))
+        conn.commit()
+
+        # Lógica para controlar el LED según el estado
+        # Puedes agregar aquí la lógica para encender o apagar el LED según el estado
+
+        return {"mensaje": f"Estado del LED cambiado exitosamente a {estado}"}
+    except Exception as e:
+        raise HTTPException(status_code=-1, detail=str(e))
+
+@app.get("/")
+async def bienvenida():
+    return {'Desarrollado por': 'Janneth Santos'}
