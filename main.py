@@ -45,7 +45,10 @@ async def cambiar_estado_led(estado: int):
         conn.commit()
 
         # Lógica para controlar el LED según el estado
+<<<<<<< HEAD:main.py
 
+=======
+>>>>>>> 50d4a0138fd8cc45beb84320d48a18840fba9746:app.py
 
         return {"mensaje": f"Estado del LED cambiado exitosamente a {estado}"}
     except Exception as e:
