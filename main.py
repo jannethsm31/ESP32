@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-conn = sqlite3.connect("sql/datos.db")
+conn = sqlite3.connect("sql/dispositivos.db")
 
 app = FastAPI()
 

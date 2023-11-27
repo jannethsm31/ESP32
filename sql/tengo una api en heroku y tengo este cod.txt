@@ -1,0 +1,59 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+const char* ssid = "Wokwi-GUEST";
+const char* pass = "";
+const char* serverName = "http://tu-ip:5000";  // Reemplaza con la dirección IP de tu máquina
+
+const int potPin = 34;
+const int ledPin = 13;
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(ssid, pass);
+  delay(2000);
+
+  Serial.print("Conectando a la red WiFi: ");
+  Serial.println(ssid);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi conectado");
+  Serial.println("Dirección IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {
+  int potValue = analogRead(potPin);
+  int ledValue = digitalRead(ledPin);
+
+  Serial.print("Valor del potenciómetro: ");
+  Serial.println(potValue);
+
+  Serial.print("Estado del LED: ");
+  Serial.println(ledValue);
+
+  // Construye la URL con los parámetros
+  String url = serverName + "/guardar-datos?pot=" + String(potValue) + "&led=" + String(ledValue);
+
+  HTTPClient http;
+  http.begin(url);  // Inicia la conexión HTTP
+  int httpCode = http.POST("");  // Realiza una solicitud POST
+
+  if (httpCode > 0) {
+    String payload = http.getString();  // Obtiene la respuesta del servidor
+    Serial.println("Respuesta del servidor: " + payload);
+  } else {
+    Serial.println("Error en la solicitud HTTP");
+  }
+
+  http.end();  // Cierra la conexión HTTP
+
+  delay(1000);
+}
+
+https://backendesp-c2ae18e5982d.herokuapp.com
