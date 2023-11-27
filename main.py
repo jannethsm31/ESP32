@@ -1,10 +1,8 @@
-import os
 import sqlite3
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-conn = sqlite3.connect("sql/dispositivos.db")
 
 app = FastAPI()
 
@@ -21,34 +19,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class iot(BaseModel):
-    valor: str
+conn = sqlite3.connect("sql/dispositivos.db")
 
-@app.get("/led")
-async def obtener_estado_led():
-    try:
-        c = conn.cursor()
-        c.execute('SELECT * FROM dispositivos')
-        response = [{'valor': row[2]} for row in c]
-        return response
-    except Exception as e:
-        raise HTTPException(status_code=-1, detail=str(e))
+class Datos(BaseModel):
+    pot: int
+    led: int
 
-@app.post("/led/{estado}")
-async def cambiar_estado_led(estado: int):
+@app.post("/actualizar-datos")
+async def actualizar_datos(datos: Datos):
     try:
-        if estado not in [0, 1]:
-            raise HTTPException(status_code=-1, detail="El estado debe ser 0 o 1")
+        pot_value = datos.pot
+        led_value = datos.led
 
         c = conn.cursor()
-        c.execute('INSERT INTO dispositivos (valor) VALUES (?)', (str(estado),))
+        c.execute('INSERT INTO dispositivos (pot, led) VALUES (?, ?)', (pot_value, led_value))
         conn.commit()
 
-        # Lógica para controlar el LED según el estado
-
-        return {"mensaje": f"Estado del LED cambiado exitosamente a {estado}"}
+        return {"mensaje": "Datos actualizados exitosamente"}
     except Exception as e:
         raise HTTPException(status_code=-1, detail=str(e))
+
 
 @app.get("/")
 async def bienvenida():
