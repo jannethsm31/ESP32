@@ -1,6 +1,6 @@
- CREATE TABLE IF NOT EXISTS dispositivos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            valor TEXT NOT NULL
-        );
-
-INSERT INTO dispositivos (valor) VALUES ('1');
+CREATE TABLE IF NOT EXISTS dispositivos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pot INTEGER NOT NULL,
+    led INTEGER NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
