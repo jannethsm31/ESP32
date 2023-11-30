@@ -8,7 +8,7 @@ conn = sqlite3.connect("sql/dispositivos.db")
 app = FastAPI()
 
 origins = [
-    "",
+    "https://wokwi.com/projects/382288042107508737",
     "",
 ]
 
