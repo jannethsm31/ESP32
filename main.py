@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+conn = sqlite3.connect("sql/dispositivos.db")
 
 app = FastAPI()
 
@@ -19,27 +20,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-conn = sqlite3.connect("sql/dispositivos.db")
 
 class Datos(BaseModel):
-    pot: int
-    led: int
-
-@app.post("/actualizar-datos")
-async def actualizar_datos(datos: Datos):
-    try:
-        pot_value = datos.pot
-        led_value = datos.led
-
-        c = conn.cursor()
-        c.execute('INSERT INTO dispositivos (pot, led) VALUES (?, ?)', (pot_value, led_value))
-        conn.commit()
-
-        return {"mensaje": "Datos actualizados exitosamente"}
-    except Exception as e:
-        raise HTTPException(status_code=-1, detail=str(e))
-
+    id: str
+    pot: str
+    led: str
 
 @app.get("/")
 async def bienvenida():
     return {'Desarrollado por': 'Janneth Santos'}
+
+# Todos los dispositivos
+@app.post("/dispositivos")
+async def dispositivos():
+
+        c = conn.cursor()
+        c.execute('SELECT * FROM dispositivos')
+        response = []
+        for row in c:
+            dispositivos = {"id": row[0], "dispositivo": row[1], "valor": row[2]}
+            response.appende(dispositivo)
+        return response
+
+@app.post("/control-led")
+async def control_led():
+    try:
+        c = conn.cursor()
+        c.execute('SELECT led FROM dispositivos ORDER BY ')
+
+
+
