@@ -20,7 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 class Datos(BaseModel):
     id: str
     pot: str
@@ -33,20 +32,29 @@ async def bienvenida():
 # Todos los dispositivos
 @app.post("/dispositivos")
 async def dispositivos():
+    c = conn.cursor()
+    c.execute('SELECT * FROM dispositivos')
+    response = []
+    for row in c:
+        dispositivo = {"id": row[0], "dispositivo": row[1], "valor": row[2]}
+        response.append(dispositivo)
+    return response
 
-        c = conn.cursor()
-        c.execute('SELECT * FROM dispositivos')
-        response = []
-        for row in c:
-            dispositivos = {"id": row[0], "dispositivo": row[1], "valor": row[2]}
-            response.appende(dispositivo)
-        return response
+# Dispositivos por id
+@app.get("/dispositivos/{id}")
+async def dispositivos(id: str):
+    c = conn.cursor()
+    c.execute('SELECT * FROM dispositivos WHERE id = ?', (id,))
+    dispositivo = None
+    for row in c:
+        dispositivo = {"id": row[0], "dispositivo": row[1], "valor": row[2]}
+    return dispositivo
 
-@app.post("/control-led")
-async def control_led():
-    try:
-        c = conn.cursor()
-        c.execute('SELECT led FROM dispositivos ORDER BY ')
-
-
-
+@app.put("/dispositivos/{id}")
+async def actualizar_dispositivo(id: str, dispositivo: Datos):
+    """Actualiza un dispositivo."""
+    c = conn.cursor()
+    c.execute('UPDATE dispositivos SET dispositivo = ?, valor = ? WHERE id = ?',
+              (dispositivo.dispositivo, dispositivo.valor, id))
+    conn.commit()
+    return dispositivo
