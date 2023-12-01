@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispositivos</title>
+</head>
+<body>
+    <h1>Dispositivos</h1>
+
+    <div>
+        <label for="dispositivoId">Device ID:</label>
+        <input type="text" id="dispositivoId"/>
+        <button onclick="obtenerDispo()">Get Device</button>
+    </div>
+
+    <div>
+        <label for="potValue">Pot Value:</label>
+        <input type="text" id="potValue" />
+        <label for="ledValue">LED Value:</label>
+        <input type="text" id="ledValue" />
+        <button onclick="actualizarDispo()">Update Device</button>
+    </div>
+
+    <div id="output"></div>
+
+    <script>
+        async function obtenerDispo() {
+            const dispositivoId = document.getElementById('dispositivoId').value;
+
+            const response = await fetch(`http://localhost:8000/dispositivos/${dispositivoId}`);
+            const device = await response.json();
+
+            document.getElementById('output').innerHTML = JSON.stringify(device);
+        }
+
+        async function actualizarDispo() {
+            const dispositivoId = document.getElementById('dispositivoId').value;
+            const potValue = document.getElementById('potValue').value;
+            const ledValue = document.getElementById('ledValue').value;
+
+            const response = await fetch(`http://localhost:8000/dispositivos/${dispositivoId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: dispositivoId,
+                    pot: potValue,
+                    led: ledValue,
+                }),
+            });
+
+            const actualizadoDispo = await response.json();
+
+            document.getElementById('output').innerHTML = JSON.stringify(actualizadoDispo);
+        }
+    </script>
+</body>
+</html>
