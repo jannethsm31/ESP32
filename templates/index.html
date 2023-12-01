@@ -9,11 +9,11 @@
     <h1>Dispositivos</h1>
 
     <div>
-        <label for="potValue">Pot Value:</label>
+        <label for="potValue">Informacion del potenciometro:</label>
         <span id="potOutput"></span>
         <br>
         <label for="ledValue">LED Value:</label>
-        <input type="text" id="ledValue" />
+        <input type="number" id="ledValue" min='0' max='1'/>
         <button onclick="actualizarDispo()">Actualizar</button>
     </div>
 
@@ -24,31 +24,61 @@
     
         async function obtenerDispo() {
 
-            const response = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos`);
-            const device = await response.json();
+            const response_led = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos/1`);
+            const response_pot = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos/2`);
 
-            console.log(device);
+            const device_led = await response_led.json();
+            const device_pot = await response_pot.json();
+
+            const potenciometro = document.getElementById('potOutput');
+
+            potenciometro.innerHTML = `
+            <p>Valor: ${device_pot.valor}</p>
+            `;
+
+            const led = document.getElementById('ledValue');
+
+            led.value = device_led.valor;
+
+            //console.log(device_led);
+            //console.log(device_pot);
         }
 
         async function actualizarDispo() {
-            const dispositivoId = document.getElementById('dispositivoId').value;
+
+            const reponse_get = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos/1`);
+
+            const device_led = await reponse_get.json();
+
+
             const ledValue = document.getElementById('ledValue').value;
 
-            const response = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos/${dispositivoId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: dispositivoId,
-                    led: ledValue,
-                }),
-            });
+            var numero = parseInt(ledValue);
 
-            const actualizadoDispo = await response.json();
+            if (numero != 1 || numero == 2){
+                alert('Por favor, ingrese solo el numero 0 o 1');
 
-            document.getElementById('output').innerHTML = JSON.stringify(actualizadoDispo);
+            } else {
+                const response = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos/${device_led.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: `${device_led.id}`,
+                        pot: device_led.dispositivo,
+                        led: ledValue,
+                    }),
+                });
+
+                const actualizadoDispo = await response.json();
+
+                document.getElementById('output').innerHTML = JSON.stringify(actualizadoDispo);
+            }
         }
+
+
     </script>
 </body>
 </html>
