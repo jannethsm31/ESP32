@@ -9,7 +9,8 @@ app = FastAPI()
 
 origins = [
     "https://wokwi.com/projects/382288042107508737",
-    "",
+    "http://127.0.0.1:8080",
+    "http://localhost:8080"
 ]
 
 app.add_middleware(
