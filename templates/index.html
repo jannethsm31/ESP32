@@ -16,7 +16,7 @@
 
     <div>
         <label for="potValue">Pot Value:</label>
-        <input type="text" id="potValue" />
+        <span id="potOutput"></span>
         <label for="ledValue">LED Value:</label>
         <input type="text" id="ledValue" />
         <button onclick="actualizarDispo()">Actualizar</button>
@@ -31,12 +31,12 @@
             const response = await fetch(`http://localhost:8000/dispositivos/${dispositivoId}`);
             const device = await response.json();
 
+            document.getElementById('potOutput').innerText = `Pot Value: ${device.pot}`;
             document.getElementById('output').innerHTML = JSON.stringify(device);
         }
 
         async function actualizarDispo() {
             const dispositivoId = document.getElementById('dispositivoId').value;
-            const potValue = document.getElementById('potValue').value;
             const ledValue = document.getElementById('ledValue').value;
 
             const response = await fetch(`http://localhost:8000/dispositivos/${dispositivoId}`, {
@@ -46,7 +46,6 @@
                 },
                 body: JSON.stringify({
                     id: dispositivoId,
-                    pot: potValue,
                     led: ledValue,
                 }),
             });
