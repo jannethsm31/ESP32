@@ -28,7 +28,7 @@
         async function obtenerDispo() {
             const dispositivoId = document.getElementById('dispositivoId').value;
 
-            const response = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/${dispositivoId}`);
+            const response = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos/${dispositivoId}`);
             const device = await response.json();
 
             document.getElementById('potOutput').innerText = `Pot Value: ${device.pot}`;
@@ -39,7 +39,7 @@
             const dispositivoId = document.getElementById('dispositivoId').value;
             const ledValue = document.getElementById('ledValue').value;
 
-            const response = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/${dispositivoId}`, {
+            const response = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos/${dispositivoId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
