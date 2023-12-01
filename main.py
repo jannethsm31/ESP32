@@ -9,7 +9,7 @@ app = FastAPI()
 
 origins = [
     "https://wokwi.com/projects/382288042107508737",
-    "",
+    "https://frontendapp-69213e65d88f.herokuapp.com",
 ]
 
 app.add_middleware(
