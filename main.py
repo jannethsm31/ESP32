@@ -9,12 +9,10 @@ app = FastAPI()
 
 origins = [
     "https://wokwi.com/projects/382288042107508737",
-<<<<<<< HEAD
     "http://127.0.0.1:8080",
-    "http://localhost:8080"
-=======
+    "http://localhost:8080",
     "https://frontendapp-69213e65d88f.herokuapp.com",
->>>>>>> b9961aa438b7b22c22cbeaae99f59228ff7f65fc
+
 ]
 
 app.add_middleware(
