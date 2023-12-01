@@ -9,14 +9,9 @@
     <h1>Dispositivos</h1>
 
     <div>
-        <label for="dispositivoId">Id del dispositivo:</label>
-        <input type="text" id="dispositivoId"/>
-        <button onclick="obtenerDispo()">Obtener</button>
-    </div>
-
-    <div>
         <label for="potValue">Pot Value:</label>
         <span id="potOutput"></span>
+        <br>
         <label for="ledValue">LED Value:</label>
         <input type="text" id="ledValue" />
         <button onclick="actualizarDispo()">Actualizar</button>
@@ -25,14 +20,14 @@
     <div id="output"></div>
 
     <script>
+        document.body.onload = obtenerDispo();
+    
         async function obtenerDispo() {
-            const dispositivoId = document.getElementById('dispositivoId').value;
 
-            const response = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos/${dispositivoId}`);
+            const response = await fetch(`https://backendesp-c2ae18e5982d.herokuapp.com/dispositivos`);
             const device = await response.json();
 
-            document.getElementById('potOutput').innerText = `Pot Value: ${device.pot}`;
-            document.getElementById('output').innerHTML = JSON.stringify(device);
+            console.log(device);
         }
 
         async function actualizarDispo() {
